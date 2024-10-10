@@ -1,9 +1,7 @@
 import express from "express";
+import { HOST_NAME, PORT } from "./config";
 
 const app = express();
-
-const PORT = 3331;
-const HOST_NAME = "127.0.0.1";
 
 /** ---> Registering middlewares. */
 app.use(express.json({ limit: "10kb" }));
