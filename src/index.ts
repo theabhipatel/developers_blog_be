@@ -3,12 +3,16 @@ import { HOST_NAME, MONGO_DB_URL, PORT } from "./config";
 import { blueLog } from "./utils/colorLogs";
 import { connectDb } from "./utils/connectDb";
 import { errorHandler } from "./middlewares/errorHandler";
+import cors from "cors";
+import helmet from "helmet";
 
 const app = express();
 
 /** ---> Registering middlewares. */
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(helmet());
 
 /** ---> Handling home route. */
 app.get("/", (req, res) => {
