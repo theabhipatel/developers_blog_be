@@ -5,6 +5,7 @@ import { connectDb } from "./utils/connectDb";
 import { errorHandler } from "./middlewares/errorHandler";
 import cors from "cors";
 import helmet from "helmet";
+import router from "./routes";
 
 const app = express();
 
@@ -18,6 +19,9 @@ app.use(helmet());
 app.get("/", (req, res) => {
   res.status(200).json({ success: true, message: "Welcome to the Developers Blog." });
 });
+
+/** ---> Handling all application's routes */
+app.use("/api/v1", router);
 
 /** ---> Handling not found (404) routes. */
 app.use("*", (req, res) => {
