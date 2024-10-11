@@ -2,7 +2,7 @@
 node_modules/
 
 # Environment variables
-.env*
+.env
 
 # App builds and distributions
 build
