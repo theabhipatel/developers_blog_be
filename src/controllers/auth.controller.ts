@@ -1,4 +1,4 @@
-import userModel from "@/models/user.model";
+import userModel, { EProvider } from "@/models/user.model";
 import userProfileModel from "@/models/userProfile.model";
 import { RequestHandler } from "express";
 import bcrypt from "bcryptjs";
@@ -19,6 +19,7 @@ export const singupHandler: RequestHandler = async (req, res, next) => {
     const newUser = await userModel.create({
       email,
       password: hashedPassword,
+      provider: EProvider.CREDENTIALS,
     });
     await userProfileModel.create({
       user: newUser._id,

@@ -5,12 +5,18 @@ export enum ERoles {
   ADMIN = "ADMIN",
   USER = "USER",
 }
+export enum EProvider {
+  GOOGLE = "GOOGLE",
+  GITHUB = "GITHUB",
+  CREDENTIALS = "CREDENTIALS",
+}
 /* eslint-enable no-unused-vars */
 
 interface IBaseUser {
   email: string;
   password: string;
   role: ERoles;
+  provider: EProvider;
   isVerified: boolean;
   isBlocked: boolean;
   isDeleted: boolean;
@@ -34,6 +40,11 @@ const userSchema = new Schema<IUserSchema>(
       type: String,
       enum: ERoles,
       default: ERoles.USER,
+    },
+    provider: {
+      type: String,
+      enum: EProvider,
+      default: EProvider.CREDENTIALS,
     },
     isVerified: {
       type: Boolean,
