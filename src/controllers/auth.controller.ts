@@ -65,9 +65,47 @@ export const signinHandler: RequestHandler = async (req, res, next) => {
     if (!isPasswordMatched)
       return res.status(401).json({ success: false, message: "Invalid credantials." });
 
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET);
+    const userProfile = await userProfileModel
+      .findOne({ user: user._id })
+      .select("firstName lastName profilePic")
+      .lean();
 
-    res.status(200).json({ success: true, message: "User logged in successfully.", token });
+    const accessToken = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET);
+
+    res.status(200).json({
+      success: true,
+      message: "User logged in successfully.",
+      user: { ...userProfile, email },
+      accessToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const oAuthSigninHandler: RequestHandler = async (req, res, next) => {
+  try {
+    // const { email, password } = req.body;
+    console.log("oauth req.body --->", req.body); // eslint-disable-line
+
+    // const user = await userModel.findOne({ email });
+    // if (!user) return res.status(401).json({ success: false, message: "Invalid credantials." });
+    // if (!user.isVerified)
+    //   return res.status(401).json({ success: false, message: "Email not verified." });
+    // if (user.isBlocked)
+    //   return res.status(401).json({ success: false, message: "User is blocked." });
+    // if (user.isDeleted)
+    //   return res.status(403).json({ success: false, message: "This account is deleted." });
+
+    // const isPasswordMatched = await bcrypt.compare(password, user.password);
+    // if (!isPasswordMatched)
+    //   return res.status(401).json({ success: false, message: "Invalid credantials." });
+
+    // const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET);
+
+    // res.status(200).json({ success: true, message: "User logged in successfully.", token });
+
+    res.status(200).json({ success: true, message: "User logged in successfully." });
   } catch (error) {
     next(error);
   }
