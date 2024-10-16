@@ -6,9 +6,9 @@ export enum ERoles {
   USER = "USER",
 }
 export enum EProvider {
-  GOOGLE = "GOOGLE",
-  GITHUB = "GITHUB",
-  CREDENTIALS = "CREDENTIALS",
+  GOOGLE = "google",
+  GITHUB = "github",
+  CREDENTIALS = "credentials",
 }
 /* eslint-enable no-unused-vars */
 
@@ -34,7 +34,6 @@ const userSchema = new Schema<IUserSchema>(
     },
     password: {
       type: String,
-      required: true,
     },
     role: {
       type: String,
