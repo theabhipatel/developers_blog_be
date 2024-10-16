@@ -75,7 +75,7 @@ export const signinHandler: RequestHandler = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "User logged in successfully.",
-      user: { ...userProfile, email },
+      user: { ...userProfile, email, role: user.role, _id: user._id },
       accessToken,
     });
   } catch (error) {
