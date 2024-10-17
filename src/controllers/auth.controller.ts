@@ -109,6 +109,14 @@ export const oAuthSigninHandler: RequestHandler = async (req, res, next) => {
         res.status(403).json({ success: false, message: "This account is deleted." });
         return;
       }
+
+      if (user.provider !== provider) {
+        res
+          .status(401)
+          .json({ success: false, message: "User cannot login with these credentials." });
+        return;
+      }
+
       const userProfile = await userProfileModel
         .findOne({ user: user._id })
         .select("firstName lastName profilePic")
