@@ -11,7 +11,7 @@ import { deserializeUser } from "./middlewares/deserializeUser";
 const app = express();
 
 /** ---> Registering middlewares. */
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
