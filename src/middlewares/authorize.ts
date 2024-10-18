@@ -7,9 +7,14 @@ export const authorize = (roles: ERoles[]) => {
       const userId = req.user?.userId;
       const role = req.user?.role;
 
-      if (!userId) return res.status(401).json({ success: false, message: "Please signin first." });
-      if (!roles.includes(role))
-        return res.status(403).json({ success: false, message: "You cannot access this route." });
+      if (!userId) {
+        res.status(401).json({ success: false, message: "Please signin first." });
+        return;
+      }
+      if (!roles.includes(role)) {
+        res.status(403).json({ success: false, message: "You cannot access this route." });
+        return;
+      }
 
       next();
     } catch (error) {
