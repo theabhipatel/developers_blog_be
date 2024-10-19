@@ -28,9 +28,11 @@ export const addBlogHandler: RequestHandler = async (req, res, next) => {
 
 export const getAllBlogHandler: RequestHandler = async (req, res, next) => {
   try {
+    const blogs = await blogModel.find({}).select("-content");
     res.status(200).json({
       success: true,
       message: "Blogs fetched successfully.",
+      blogs,
     });
   } catch (error) {
     next(error);
