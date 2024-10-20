@@ -23,7 +23,8 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.1",
-    "nodemailer": "^6.9.15"
+    "nodemailer": "^6.9.15",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
