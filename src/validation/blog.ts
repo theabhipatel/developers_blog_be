@@ -14,6 +14,24 @@ export const addBlogSchema = object({
   }),
 });
 
+export const updateBlogSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+  body: object({
+    title: string({ message: "title must be string" }).optional(),
+    thumbnail: string({ message: "thumbnail must be url string" })
+      .url({ message: "thumbnail must be a url" })
+      .optional(),
+    content: string({ message: "content must be string" }).optional(),
+    status: enum_(blogStatusEnum, {
+      message: "status must be either draft or published",
+    }).optional(),
+  }),
+});
+
 export const getBlogSchema = object({
   params: object({
     blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {

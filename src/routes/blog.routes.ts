@@ -7,7 +7,7 @@ import {
 import { authorize } from "@/middlewares/authorize";
 import { validate } from "@/middlewares/validate";
 import { ERoles } from "@/models/user.model";
-import { addBlogSchema, getBlogSchema } from "@/validation/blog";
+import { addBlogSchema, getBlogSchema, updateBlogSchema } from "@/validation/blog";
 import { Router } from "express";
 
 const blogRouter = Router();
@@ -19,7 +19,12 @@ blogRouter.post(
   validate(addBlogSchema),
   addBlogHandler
 );
-blogRouter.patch("/update/:blogId", authorize([ERoles.ADMIN, ERoles.USER]), updateBlogHandler);
+blogRouter.patch(
+  "/update/:blogId",
+  authorize([ERoles.ADMIN, ERoles.USER]),
+  validate(updateBlogSchema),
+  updateBlogHandler
+);
 
 /** ---> Get routes. */
 blogRouter.get("/", getAllBlogHandler);
