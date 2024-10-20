@@ -12,8 +12,7 @@ import { Router } from "express";
 
 const blogRouter = Router();
 
-blogRouter.get("/", getAllBlogHandler);
-blogRouter.get("/:blogId", validate(getBlogSchema), getBlogHandler);
+/** Add, update and delete routes. */
 blogRouter.post(
   "/add",
   authorize([ERoles.ADMIN, ERoles.USER]),
@@ -21,5 +20,9 @@ blogRouter.post(
   addBlogHandler
 );
 blogRouter.patch("/update/:blogId", authorize([ERoles.ADMIN, ERoles.USER]), updateBlogHandler);
+
+/** ---> Get routes. */
+blogRouter.get("/", getAllBlogHandler);
+blogRouter.get("/:blogId", validate(getBlogSchema), getBlogHandler);
 
 export default blogRouter;
