@@ -11,3 +11,10 @@ export const singupSchema = object({
     ),
   }),
 });
+
+export const signinSchema = object({
+  body: object({
+    email: string({ required_error: "email is required." }).email(),
+    password: string({ required_error: "password is required." }),
+  }),
+});
