@@ -42,7 +42,23 @@ export const getAllBlogHandler: RequestHandler = async (req, res, next) => {
 export const getBlogHandler: RequestHandler = async (req, res, next) => {
   try {
     const blogId = req.params.blogId;
-    const blog = await blogModel.findById(blogId);
+    const blog = await blogModel.findById(blogId).populate({
+      path: "user",
+      select: "email",
+      populate: {
+        path: "userProfile",
+        model: "userProfile",
+        select: "firstName lastName profilePic bio",
+      },
+    });
+
+    if (!blog) {
+      res.status(404).json({
+        success: false,
+        message: "Blog not found.",
+      });
+      return;
+    }
 
     res.status(200).json({
       success: true,
