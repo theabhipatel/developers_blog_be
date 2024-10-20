@@ -10,7 +10,7 @@ export const addBlogSchema = object({
     slug: string({ required_error: "slug is required." }),
     thumbnail: string({ required_error: "thumbnail is required." }).url(),
     content: string({ required_error: "content is required." }),
-    status: enum_(blogStatusEnum),
+    status: enum_(blogStatusEnum, { required_error: "status is required." }),
   }),
 });
 
