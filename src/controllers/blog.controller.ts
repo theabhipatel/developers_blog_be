@@ -72,6 +72,19 @@ export const getBlogHandler: RequestHandler = async (req, res, next) => {
 
 export const updateBlogHandler: RequestHandler = async (req, res, next) => {
   try {
+    const blogId = req.params.blogId;
+    const { title, thumbnail, content, status } = req.body;
+
+    const blog = await blogModel.findByIdAndUpdate(blogId, { title, thumbnail, content, status });
+
+    if (!blog) {
+      res.status(404).json({
+        success: false,
+        message: "Blog not found.",
+      });
+      return;
+    }
+
     res.status(200).json({
       success: true,
       message: "Blog updated successfully.",
