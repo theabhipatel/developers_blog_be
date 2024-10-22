@@ -59,7 +59,9 @@ export const signinHandler: RequestHandler = async (req, res, next) => {
       return;
     }
     if (!user.isVerified) {
-      res.status(401).json({ success: false, message: "Email not verified." });
+      res
+        .status(401)
+        .json({ success: false, message: "Email not verified. Please verify your email first." });
       return;
     }
     if (user.isBlocked) {
