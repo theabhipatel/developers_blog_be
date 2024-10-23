@@ -14,6 +14,7 @@ export enum EProvider {
 
 interface IBaseUser {
   email: string;
+  username: string;
   password: string;
   role: ERoles;
   provider: EProvider;
@@ -27,6 +28,12 @@ interface IUserSchema extends Document, IBaseUser {}
 const userSchema = new Schema<IUserSchema>(
   {
     email: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    username: {
       type: String,
       required: true,
       unique: true,
