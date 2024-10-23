@@ -17,9 +17,11 @@ export const singupHandler: RequestHandler = async (req, res, next) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    const username = email.split("@")[0];
 
     const newUser = await userModel.create({
       email,
+      username,
       password: hashedPassword,
       provider: EProvider.CREDENTIALS,
     });
@@ -73,7 +75,7 @@ export const signinHandler: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
+    const isPasswordMatched = await bcrypt.compare(password, user.password ?? "");
     if (!isPasswordMatched) {
       res.status(401).json({ success: false, message: "Invalid credantials." });
       return;
@@ -89,7 +91,7 @@ export const signinHandler: RequestHandler = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "User logged in successfully.",
-      user: { ...userProfile, email, role: user.role, _id: user._id },
+      user: { ...userProfile, email, username: user.username, role: user.role, _id: user._id },
       accessToken,
     });
   } catch (error) {
@@ -133,8 +135,10 @@ export const oAuthSigninHandler: RequestHandler = async (req, res, next) => {
         accessToken,
       });
     } else {
+      const username = email.split("@")[0];
       const newUser = await userModel.create({
         email,
+        username,
         provider,
         isVerified: true,
       });
