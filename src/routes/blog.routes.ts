@@ -1,6 +1,6 @@
 import {
   addBlogHandler,
-  getAllBlogHandler,
+  getAllBlogsHandler,
   getBlogHandler,
   updateBlogHandler,
 } from "@/controllers/blog.controller";
@@ -27,7 +27,7 @@ blogRouter.patch(
 );
 
 /** ---> Get routes. */
-blogRouter.get("/", getAllBlogHandler);
+blogRouter.get("/", getAllBlogsHandler);
 blogRouter.get("/:blogId", validate(getBlogSchema), getBlogHandler);
 
 export default blogRouter;
