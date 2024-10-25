@@ -125,6 +125,37 @@ export const getBlogByIdHandler: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const slug = req.params.slug;
+    const blog = await blogModel.findOne({ slug }).populate({
+      path: "user",
+      select: "email",
+      populate: {
+        path: "userProfile",
+        model: "userProfile",
+        select: "firstName lastName profilePic bio",
+      },
+    });
+
+    if (!blog) {
+      res.status(404).json({
+        success: false,
+        message: "Blog not found.",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Blog fetched successfully.",
+      blog,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAllMyBlogsHandler: RequestHandler = async (req, res, next) => {
   try {
     const userId = req.user.userId;

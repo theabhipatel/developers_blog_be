@@ -3,12 +3,18 @@ import {
   getAllBlogsHandler,
   getAllMyBlogsHandler,
   getBlogByIdHandler,
+  getBlogBySlugHandler,
   updateBlogHandler,
 } from "@/controllers/blog.controller";
 import { authorize } from "@/middlewares/authorize";
 import { validate } from "@/middlewares/validate";
 import { ERoles } from "@/models/user.model";
-import { addBlogSchema, getBlogSchema, updateBlogSchema } from "@/validation/blog";
+import {
+  addBlogSchema,
+  getBlogBySlugSchema,
+  getBlogSchema,
+  updateBlogSchema,
+} from "@/validation/blog";
 import { Router } from "express";
 
 const blogRouter = Router();
@@ -30,6 +36,7 @@ blogRouter.patch(
 /** ---> Get routes. */
 blogRouter.get("/", getAllBlogsHandler);
 blogRouter.get("/my-blogs", authorize([ERoles.ADMIN, ERoles.USER]), getAllMyBlogsHandler);
+blogRouter.get("/slug/:slug", validate(getBlogBySlugSchema), getBlogBySlugHandler);
 blogRouter.get("/:blogId", validate(getBlogSchema), getBlogByIdHandler);
 
 export default blogRouter;

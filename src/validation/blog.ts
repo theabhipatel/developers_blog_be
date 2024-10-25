@@ -39,3 +39,9 @@ export const getBlogSchema = object({
     }),
   }),
 });
+
+export const getBlogBySlugSchema = object({
+  params: object({
+    slug: string({ required_error: "slug is required." }),
+  }),
+});
