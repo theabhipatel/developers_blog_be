@@ -94,7 +94,7 @@ export const getAllBlogsHandler: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getBlogHandler: RequestHandler = async (req, res, next) => {
+export const getBlogByIdHandler: RequestHandler = async (req, res, next) => {
   try {
     const blogId = req.params.blogId;
     const blog = await blogModel.findById(blogId).populate({

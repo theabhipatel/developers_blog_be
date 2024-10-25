@@ -2,7 +2,7 @@ import {
   addBlogHandler,
   getAllBlogsHandler,
   getAllMyBlogsHandler,
-  getBlogHandler,
+  getBlogByIdHandler,
   updateBlogHandler,
 } from "@/controllers/blog.controller";
 import { authorize } from "@/middlewares/authorize";
@@ -30,6 +30,6 @@ blogRouter.patch(
 /** ---> Get routes. */
 blogRouter.get("/", getAllBlogsHandler);
 blogRouter.get("/my-blogs", authorize([ERoles.ADMIN, ERoles.USER]), getAllMyBlogsHandler);
-blogRouter.get("/:blogId", validate(getBlogSchema), getBlogHandler);
+blogRouter.get("/:blogId", validate(getBlogSchema), getBlogByIdHandler);
 
 export default blogRouter;
