@@ -6,17 +6,33 @@ import { RequestHandler } from "express";
 export const getUserProfileByUserNameHandler: RequestHandler = async (req, res, next) => {
   try {
     const username = req.params.username;
+    const viewerId = req.user.userId;
+
     const user = await userModel.findOne({ username });
     if (!user) {
       res.status(404).json({ success: false, message: "User not found." });
       return;
     }
-    const profile = await userProfileModel.findOne({ user: user?._id });
+    const profile = await userProfileModel.findOne({ user: user?._id }).lean();
+
+    if (user._id === viewerId) {
+      res.status(200).json({
+        success: true,
+        message: "Profile fetched successfully.",
+        profile,
+      });
+      return;
+    }
+
+    const isFollowed = await followerModel.findOne({
+      follower: viewerId,
+      following: user._id,
+    });
 
     res.status(200).json({
       success: true,
       message: "Profile fetched successfully.",
-      profile,
+      profile: { isFollowed: !!isFollowed, ...profile },
     });
   } catch (error) {
     next(error);
