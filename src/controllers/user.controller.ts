@@ -2,7 +2,7 @@ import userModel from "@/models/user.model";
 import userProfileModel from "@/models/userProfile.model";
 import { RequestHandler } from "express";
 
-export const getUserProfileByUserName: RequestHandler = async (req, res, next) => {
+export const getUserProfileByUserNameHandler: RequestHandler = async (req, res, next) => {
   try {
     const username = req.params.username;
     const user = await userModel.findOne({ username });
