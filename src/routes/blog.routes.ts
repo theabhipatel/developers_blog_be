@@ -4,6 +4,7 @@ import {
   getAllMyBlogsHandler,
   getBlogByIdHandler,
   getBlogBySlugHandler,
+  getUsersAllBlogByUserIdHandler,
   updateBlogHandler,
 } from "@/controllers/blog.controller";
 import { authorize } from "@/middlewares/authorize";
@@ -13,6 +14,7 @@ import {
   addBlogSchema,
   getBlogBySlugSchema,
   getBlogSchema,
+  getUsersAllBlogByUserIdSchema,
   updateBlogSchema,
 } from "@/validation/blog";
 import { Router } from "express";
@@ -37,6 +39,11 @@ blogRouter.patch(
 blogRouter.get("/", getAllBlogsHandler);
 blogRouter.get("/my-blogs", authorize([ERoles.ADMIN, ERoles.USER]), getAllMyBlogsHandler);
 blogRouter.get("/slug/:slug", validate(getBlogBySlugSchema), getBlogBySlugHandler);
+blogRouter.get(
+  "/user/:userId",
+  validate(getUsersAllBlogByUserIdSchema),
+  getUsersAllBlogByUserIdHandler
+);
 blogRouter.get("/:blogId", validate(getBlogSchema), getBlogByIdHandler);
 
 export default blogRouter;

@@ -199,3 +199,47 @@ export const getAllMyBlogsHandler: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUsersAllBlogByUserIdHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const blogs = await blogModel
+      .find({ user: userId })
+      .select("-content")
+      .populate({
+        path: "user",
+        select: "username",
+        populate: {
+          path: "userProfile",
+          model: "userProfile",
+          select: "firstName lastName profilePic",
+        },
+      })
+      .lean();
+
+    /*  eslint-disable */
+    const transformedBlogs = (blogs as any[]).map((blog: IBlog) => {
+      const user = blog.user;
+
+      if (user.userProfile) {
+        (user as any).profilePic = user.userProfile.profilePic;
+        (user as any).firstName = user.userProfile.firstName;
+        (user as any).lastName = user.userProfile.lastName;
+        delete user.userProfile;
+      }
+      return {
+        ...blog,
+        user,
+      };
+    });
+    /*  eslint-enable */
+
+    res.status(200).json({
+      success: true,
+      message: "Blogs fetched successfully.",
+      blogs: transformedBlogs,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
