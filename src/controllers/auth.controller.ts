@@ -131,7 +131,7 @@ export const oAuthSigninHandler: RequestHandler = async (req, res, next) => {
       res.status(200).json({
         success: true,
         message: "User logged in successfully.",
-        user: { ...userProfile, email, role: user.role, _id: user._id },
+        user: { ...userProfile, email, username: user.username, role: user.role, _id: user._id },
         accessToken,
       });
     } else {
@@ -154,7 +154,15 @@ export const oAuthSigninHandler: RequestHandler = async (req, res, next) => {
       res.status(200).json({
         success: true,
         message: "User logged in successfully.",
-        user: { _id: newUser._id, firstName, lastName, profilePic, email, role: newUser.role },
+        user: {
+          _id: newUser._id,
+          firstName,
+          lastName,
+          profilePic,
+          email,
+          username,
+          role: newUser.role,
+        },
         accessToken,
       });
     }
