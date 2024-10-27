@@ -59,3 +59,22 @@ export const followUserHandler: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const unFollowUserHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const following = req.params.followingId;
+    const existingFollow = await followerModel.deleteOne({ follower: userId, following });
+    if (!existingFollow) {
+      res.status(404).json({ success: false, message: "Follow relationship not found." });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Unfollowed successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
