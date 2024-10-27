@@ -45,3 +45,11 @@ export const getBlogBySlugSchema = object({
     slug: string({ required_error: "slug is required." }),
   }),
 });
+
+export const getUsersAllBlogByUserIdSchema = object({
+  params: object({
+    userId: string({ required_error: "userId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid userId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
