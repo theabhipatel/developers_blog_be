@@ -128,15 +128,18 @@ export const getBlogByIdHandler: RequestHandler = async (req, res, next) => {
 export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
   try {
     const slug = req.params.slug;
-    const blog = await blogModel.findOne({ slug }).populate({
-      path: "user",
-      select: "email",
-      populate: {
-        path: "userProfile",
-        model: "userProfile",
-        select: "firstName lastName profilePic bio",
-      },
-    });
+    const blog = await blogModel
+      .findOne({ slug })
+      .populate({
+        path: "user",
+        select: "email",
+        populate: {
+          path: "userProfile",
+          model: "userProfile",
+          select: "firstName lastName profilePic bio",
+        },
+      })
+      .lean();
 
     if (!blog) {
       res.status(404).json({
@@ -146,10 +149,27 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
       return;
     }
 
+    /*  eslint-disable */
+    const transformedBlog = (blog: any) => {
+      const user = (blog as IBlog).user;
+
+      if (user.userProfile) {
+        (user as any).profilePic = user.userProfile.profilePic;
+        (user as any).firstName = user.userProfile.firstName;
+        (user as any).lastName = user.userProfile.lastName;
+        delete user.userProfile;
+      }
+      return {
+        ...blog,
+        user,
+      };
+    };
+    /*  eslint-enable */
+
     res.status(200).json({
       success: true,
       message: "Blog fetched successfully.",
-      blog,
+      blog: transformedBlog(blog),
     });
   } catch (error) {
     next(error);
