@@ -1,5 +1,6 @@
 import { IBlog } from "@/interfaces/IBlog";
 import blogModel from "@/models/blog.model";
+import followerModel from "@/models/follower.model";
 import { RequestHandler } from "express";
 
 export const addBlogHandler: RequestHandler = async (req, res, next) => {
@@ -128,11 +129,13 @@ export const getBlogByIdHandler: RequestHandler = async (req, res, next) => {
 export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
   try {
     const slug = req.params.slug;
+    const viewerId = req.user.userId;
+
     const blog = await blogModel
       .findOne({ slug })
       .populate({
         path: "user",
-        select: "email",
+        select: "email username",
         populate: {
           path: "userProfile",
           model: "userProfile",
@@ -149,6 +152,11 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
       return;
     }
 
+    const isFollowed = await followerModel.findOne({
+      follower: viewerId,
+      following: (blog?.user as unknown as { _id: string })._id,
+    });
+
     /*  eslint-disable */
     const transformedBlog = (blog: any) => {
       const user = (blog as IBlog).user;
@@ -157,6 +165,7 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
         (user as any).profilePic = user.userProfile.profilePic;
         (user as any).firstName = user.userProfile.firstName;
         (user as any).lastName = user.userProfile.lastName;
+        (user as any).isFollowed = !!isFollowed;
         delete user.userProfile;
       }
       return {
