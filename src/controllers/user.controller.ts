@@ -32,7 +32,7 @@ export const getUserProfileByUserNameHandler: RequestHandler = async (req, res, 
     res.status(200).json({
       success: true,
       message: "Profile fetched successfully.",
-      profile: { isFollowed: !!isFollowed, ...profile },
+      profile: { isFollowed: !!isFollowed, email: user.email, ...profile },
     });
   } catch (error) {
     next(error);
