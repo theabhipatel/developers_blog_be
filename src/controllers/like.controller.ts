@@ -1,7 +1,7 @@
 import likeModel from "@/models/like.model";
 import { RequestHandler } from "express";
 
-// [] TODO : This api is not fully tested. have to work on.
+// [] TODO : This api is not fully tested. have to work on. still testing ...
 export const likeBlogHandler: RequestHandler = async (req, res, next) => {
   try {
     const userId = req.user.userId;
