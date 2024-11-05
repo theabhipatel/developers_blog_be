@@ -130,7 +130,7 @@ export const getBlogByIdHandler: RequestHandler = async (req, res, next) => {
 export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
   try {
     const slug = req.params.slug;
-    const viewerId = req.user.userId;
+    const viewerId = req.user?.userId;
 
     const blog = await blogModel
       .findOne({ slug })
@@ -153,10 +153,14 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const isFollowed = await followerModel.findOne({
-      follower: viewerId,
-      following: (blog?.user as unknown as { _id: string })._id,
-    });
+    let isFollowed: boolean = false;
+    if (viewerId) {
+      const isFollowedExists = await followerModel.findOne({
+        follower: viewerId,
+        following: (blog?.user as unknown as { _id: string })._id,
+      });
+      isFollowed = !!isFollowedExists;
+    }
 
     /*  eslint-disable */
     const transformedBlog = (blog: any) => {
@@ -166,7 +170,7 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
         (user as any).profilePic = user.userProfile.profilePic;
         (user as any).firstName = user.userProfile.firstName;
         (user as any).lastName = user.userProfile.lastName;
-        (user as any).isFollowed = !!isFollowed;
+        (user as any).isFollowed = isFollowed;
         delete user.userProfile;
       }
       return {
