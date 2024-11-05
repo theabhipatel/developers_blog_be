@@ -53,3 +53,11 @@ export const getUsersAllBlogByUserIdSchema = object({
     }),
   }),
 });
+
+export const likeUnlikeBlogSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
