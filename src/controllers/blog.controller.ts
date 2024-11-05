@@ -153,6 +153,8 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
       return;
     }
 
+    const likes = await likeModel.find({ blog: blog._id }).countDocuments();
+
     let isFollowed: boolean = false;
     let isLiked: boolean = false;
     if (viewerId) {
@@ -184,8 +186,9 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
         delete user.userProfile;
       }
       return {
-        ...blog,
         user,
+        likes,
+        ...blog,
       };
     };
     /*  eslint-enable */
