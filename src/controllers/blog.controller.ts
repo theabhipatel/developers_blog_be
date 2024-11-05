@@ -154,12 +154,21 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
     }
 
     let isFollowed: boolean = false;
+    let isLiked: boolean = false;
     if (viewerId) {
+      /** ---> Checking user either follow or not.*/
       const isFollowedExists = await followerModel.findOne({
         follower: viewerId,
         following: (blog?.user as unknown as { _id: string })._id,
       });
       isFollowed = !!isFollowedExists;
+
+      /** ---> Checking user either like blog or not.*/
+      const isLikeExists = await likeModel.findOne({
+        user: viewerId,
+        blog: blog._id,
+      });
+      isLiked = !!isLikeExists;
     }
 
     /*  eslint-disable */
@@ -171,6 +180,7 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
         (user as any).firstName = user.userProfile.firstName;
         (user as any).lastName = user.userProfile.lastName;
         (user as any).isFollowed = isFollowed;
+        (user as any).isLiked = isLiked;
         delete user.userProfile;
       }
       return {
