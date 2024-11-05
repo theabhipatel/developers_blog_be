@@ -36,7 +36,7 @@ blogRouter.patch(
   validate(updateBlogSchema),
   updateBlogHandler
 );
-blogRouter.patch(
+blogRouter.post(
   "/like/:blogId",
   validate(likeUnlikeBlogSchema),
   authorize([ERoles.ADMIN, ERoles.USER]),
