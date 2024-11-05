@@ -5,6 +5,7 @@ import {
   getBlogByIdHandler,
   getBlogBySlugHandler,
   getUsersAllBlogByUserIdHandler,
+  likeUnlikeBlogHandler,
   updateBlogHandler,
 } from "@/controllers/blog.controller";
 import { authorize } from "@/middlewares/authorize";
@@ -15,6 +16,7 @@ import {
   getBlogBySlugSchema,
   getBlogSchema,
   getUsersAllBlogByUserIdSchema,
+  likeUnlikeBlogSchema,
   updateBlogSchema,
 } from "@/validation/blog";
 import { Router } from "express";
@@ -33,6 +35,12 @@ blogRouter.patch(
   authorize([ERoles.ADMIN, ERoles.USER]),
   validate(updateBlogSchema),
   updateBlogHandler
+);
+blogRouter.patch(
+  "/like/:blogId",
+  validate(likeUnlikeBlogSchema),
+  authorize([ERoles.ADMIN, ERoles.USER]),
+  likeUnlikeBlogHandler
 );
 
 /** ---> Get routes. */

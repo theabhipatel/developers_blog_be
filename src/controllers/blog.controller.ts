@@ -1,6 +1,7 @@
 import { IBlog } from "@/interfaces/IBlog";
 import blogModel from "@/models/blog.model";
 import followerModel from "@/models/follower.model";
+import likeModel from "@/models/like.model";
 import { RequestHandler } from "express";
 
 export const addBlogHandler: RequestHandler = async (req, res, next) => {
@@ -268,6 +269,27 @@ export const getUsersAllBlogByUserIdHandler: RequestHandler = async (req, res, n
       message: "Blogs fetched successfully.",
       blogs: transformedBlogs,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const likeUnlikeBlogHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const { blogId } = req.params;
+
+    const existingLike = await likeModel.findOne({ user: userId, blog: blogId });
+
+    if (existingLike) {
+      await likeModel.findByIdAndDelete(existingLike._id);
+      res.status(200).json({ message: "Blog unliked successfully" });
+      return;
+    }
+
+    await likeModel.create({ user: userId, blog: blogId });
+
+    res.status(200).json({ message: "Blog liked successfully" });
   } catch (error) {
     next(error);
   }
