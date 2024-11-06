@@ -6,7 +6,7 @@ import { RequestHandler } from "express";
 export const getUserProfileByUserNameHandler: RequestHandler = async (req, res, next) => {
   try {
     const username = req.params.username;
-    const viewerId = req.user.userId;
+    const viewerId = req.user?.userId;
 
     const user = await userModel.findOne({ username });
     if (!user) {
@@ -24,10 +24,15 @@ export const getUserProfileByUserNameHandler: RequestHandler = async (req, res, 
       return;
     }
 
-    const isFollowed = await followerModel.findOne({
-      follower: viewerId,
-      following: user._id,
-    });
+    let isFollowed: boolean = false;
+    if (viewerId) {
+      /** ---> Checking user either follow or not.*/
+      const isFollowedExists = await followerModel.findOne({
+        follower: viewerId,
+        following: user._id,
+      });
+      isFollowed = !!isFollowedExists;
+    }
 
     res.status(200).json({
       success: true,
