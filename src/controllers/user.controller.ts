@@ -14,12 +14,13 @@ export const getUserProfileByUserNameHandler: RequestHandler = async (req, res, 
       return;
     }
     const profile = await userProfileModel.findOne({ user: user?._id }).lean();
+    const followers = await followerModel.find({ following: user._id }).countDocuments();
 
     if (user._id === viewerId) {
       res.status(200).json({
         success: true,
         message: "Profile fetched successfully.",
-        profile,
+        profile: { followers, ...profile },
       });
       return;
     }
@@ -37,7 +38,7 @@ export const getUserProfileByUserNameHandler: RequestHandler = async (req, res, 
     res.status(200).json({
       success: true,
       message: "Profile fetched successfully.",
-      profile: { isFollowed: !!isFollowed, email: user.email, ...profile },
+      profile: { isFollowed: !!isFollowed, email: user.email, followers, ...profile },
     });
   } catch (error) {
     next(error);
