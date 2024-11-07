@@ -329,9 +329,40 @@ export const addCommentToBlogHandler: RequestHandler = async (req, res, next) =>
 export const getAllCommentsForABlogHandler: RequestHandler = async (req, res, next) => {
   try {
     const { blogId } = req.params;
-    const comments = await commentModel.find({ blog: blogId }).sort({ createdAt: -1 });
+    const comments = await commentModel
+      .find({ blog: blogId })
+      .populate({
+        path: "user",
+        select: "username",
+        populate: {
+          path: "userProfile",
+          model: "userProfile",
+          select: "firstName lastName profilePic",
+        },
+      })
+      .sort({ createdAt: -1 })
+      .lean();
 
-    res.status(200).json({ message: "Comments fetched successfully", comments });
+    /*  eslint-disable */
+    const transformedComments = (comments as any[]).map((comment: any) => {
+      const user = comment.user;
+
+      if (user.userProfile) {
+        (user as any).profilePic = user.userProfile.profilePic;
+        (user as any).firstName = user.userProfile.firstName;
+        (user as any).lastName = user.userProfile.lastName;
+        delete user.userProfile;
+      }
+      return {
+        ...comment,
+        user,
+      };
+    });
+    /*  eslint-enable */
+
+    res
+      .status(200)
+      .json({ message: "Comments fetched successfully", comments: transformedComments });
   } catch (error) {
     next(error);
   }
