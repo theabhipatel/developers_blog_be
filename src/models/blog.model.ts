@@ -14,7 +14,7 @@ interface IBaseBlog {
   thumbnail: string;
   content: string;
   status: EBlogStatus;
-  reads: string[];
+  reads: number;
   isDeleted: boolean;
 }
 
@@ -51,7 +51,8 @@ const blogSchema = new Schema<IBlogSchema>(
       default: EBlogStatus.DRAFT,
     },
     reads: {
-      type: [String],
+      type: Number,
+      default: 0,
     },
     isDeleted: {
       type: Boolean,
