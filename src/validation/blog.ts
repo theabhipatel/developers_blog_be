@@ -61,3 +61,15 @@ export const likeUnlikeBlogSchema = object({
     }),
   }),
 });
+
+export const addCommentToBlogSchema = object({
+  body: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+    content: string({ required_error: "content is required." }).min(
+      3,
+      "content must be at least 3 characters long."
+    ),
+  }),
+});
