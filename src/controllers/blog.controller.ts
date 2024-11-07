@@ -325,3 +325,14 @@ export const addCommentToBlogHandler: RequestHandler = async (req, res, next) =>
     next(error);
   }
 };
+
+export const getAllCommentsForABlogHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const { blogId } = req.params;
+    const comments = await commentModel.find({ blog: blogId }).sort({ createdAt: -1 });
+
+    res.status(200).json({ message: "Comments fetched successfully", comments });
+  } catch (error) {
+    next(error);
+  }
+};
