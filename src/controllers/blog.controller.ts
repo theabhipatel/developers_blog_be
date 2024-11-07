@@ -1,5 +1,6 @@
 import { IBlog } from "@/interfaces/IBlog";
 import blogModel from "@/models/blog.model";
+import commentModel from "@/models/comment.model";
 import followerModel from "@/models/follower.model";
 import likeModel from "@/models/like.model";
 import { RequestHandler } from "express";
@@ -307,6 +308,19 @@ export const likeUnlikeBlogHandler: RequestHandler = async (req, res, next) => {
     await likeModel.create({ user: userId, blog: blogId });
 
     res.status(200).json({ message: "Blog liked successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const addCommentToBlogHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const { blogId, content } = req.body;
+
+    const comment = await commentModel.create({ user: userId, blog: blogId, content });
+
+    res.status(200).json({ message: "Comment added successfully", comment });
   } catch (error) {
     next(error);
   }

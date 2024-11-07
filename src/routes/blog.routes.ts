@@ -1,5 +1,6 @@
 import {
   addBlogHandler,
+  addCommentToBlogHandler,
   getAllBlogsHandler,
   getAllMyBlogsHandler,
   getBlogByIdHandler,
@@ -13,6 +14,7 @@ import { validate } from "@/middlewares/validate";
 import { ERoles } from "@/models/user.model";
 import {
   addBlogSchema,
+  addCommentToBlogSchema,
   getBlogBySlugSchema,
   getBlogSchema,
   getUsersAllBlogByUserIdSchema,
@@ -41,6 +43,12 @@ blogRouter.post(
   validate(likeUnlikeBlogSchema),
   authorize([ERoles.ADMIN, ERoles.USER]),
   likeUnlikeBlogHandler
+);
+blogRouter.post(
+  "/comment/",
+  validate(addCommentToBlogSchema),
+  authorize([ERoles.ADMIN, ERoles.USER]),
+  addCommentToBlogHandler
 );
 
 /** ---> Get routes. */
