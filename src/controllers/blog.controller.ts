@@ -202,15 +202,13 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
       blog: transformedBlog(blog),
     });
 
-    // [::] TODO : This method is not fully tested need to test
     /** ---> Tracking user's reads */
     const existingRead = await blogReadModel.findOne({ blog: blog._id, userIp });
     if (!existingRead) {
       await blogReadModel.create({ blog: blog._id, userIp });
 
       /** --->  Updating the blog's reads count */
-      blog.reads += 1;
-      await blog.save();
+      await blogModel.findByIdAndUpdate(blog?._id, { $inc: { reads: 1 } });
     }
   } catch (error) {
     next(error);
