@@ -15,6 +15,7 @@ interface IBaseBlog {
   content: string;
   status: EBlogStatus;
   reads: number;
+  comments: number;
   isDeleted: boolean;
 }
 
@@ -51,6 +52,10 @@ const blogSchema = new Schema<IBlogSchema>(
       default: EBlogStatus.DRAFT,
     },
     reads: {
+      type: Number,
+      default: 0,
+    },
+    comments: {
       type: Number,
       default: 0,
     },
