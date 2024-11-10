@@ -329,9 +329,10 @@ export const addCommentToBlogHandler: RequestHandler = async (req, res, next) =>
     const userId = req.user.userId;
     const { blogId, content } = req.body;
 
-    const comment = await commentModel.create({ user: userId, blog: blogId, content });
+    await commentModel.create({ user: userId, blog: blogId, content });
+    res.status(200).json({ message: "Comment added successfully" });
 
-    res.status(200).json({ message: "Comment added successfully", comment });
+    await blogModel.findByIdAndUpdate(blogId, { $inc: { comments: 1 } });
   } catch (error) {
     next(error);
   }
