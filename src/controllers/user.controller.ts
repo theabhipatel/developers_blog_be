@@ -84,3 +84,27 @@ export const unFollowUserHandler: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateUserProfileHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const { firstName, lastName, profilePic, bio } = req.body;
+
+    const user = await userProfileModel.findOneAndUpdate(
+      { user: userId },
+      { firstName, lastName, profilePic, bio }
+    );
+
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found." });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Updated successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
