@@ -1,4 +1,4 @@
-import { CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from "@/config";
+import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from "@/config";
 import followerModel from "@/models/follower.model";
 import userModel from "@/models/user.model";
 import userProfileModel from "@/models/userProfile.model";
@@ -113,19 +113,8 @@ export const updateUserProfileHandler: RequestHandler = async (req, res, next) =
 
 export const uploadProfilePictureHandler: RequestHandler = async (req, res, next) => {
   try {
+    // [::] TODO : Have to make this handler name perfect.
     const userId = req.user.userId;
-    // const { firstName, lastName, profilePic, bio } = req.body;
-
-    // const user = await userProfileModel.findOneAndUpdate(
-    //   { user: userId },
-    //   { firstName, lastName, profilePic, bio }
-    // );
-
-    // if (!user) {
-    //   res.status(404).json({ success: false, message: "User not found." });
-    //   return;
-    // }
-
     const publicId = `user_profiles/${userId}`;
     const timestamp = Math.round(new Date().getTime() / 1000);
     const signature = cloudinary.utils.api_sign_request(
@@ -133,17 +122,17 @@ export const uploadProfilePictureHandler: RequestHandler = async (req, res, next
         public_id: publicId,
         timestamp,
       },
-      CLOUDINARY_API_SECRET
+      CLOUDINARY_API_SECRET!
     );
 
     res.status(200).json({
       success: true,
-      message: "Updated successfully.",
+      message: "Upload profile picture request successfully.",
       signature,
       timestamp,
-      cloud_name: CLOUDINARY_CLOUD_NAME,
-      upload_preset: "user_profile_upload_preset", // [::] TODO : Need to add this preset name in env
+      api_key: CLOUDINARY_API_KEY,
       public_id: publicId,
+      upload_url: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
     });
   } catch (error) {
     next(error);

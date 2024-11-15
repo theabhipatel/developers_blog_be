@@ -3,6 +3,7 @@ import {
   getUserProfileByUserNameHandler,
   unFollowUserHandler,
   updateUserProfileHandler,
+  uploadProfilePictureHandler,
 } from "@/controllers/user.controller";
 import { authorize } from "@/middlewares/authorize";
 import { validate } from "@/middlewares/validate";
@@ -21,6 +22,11 @@ userRouter.patch(
   authorize([ERoles.ADMIN, ERoles.USER]),
   validate(updateUserProfileSchema),
   updateUserProfileHandler
+);
+userRouter.get(
+  "/profile/upload/profile-picture",
+  authorize([ERoles.ADMIN, ERoles.USER]),
+  uploadProfilePictureHandler
 );
 userRouter.get(
   "/profile/:username",
