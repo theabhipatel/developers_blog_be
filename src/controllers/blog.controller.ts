@@ -338,11 +338,13 @@ export const likeUnlikeBlogHandler: RequestHandler = async (req, res, next) => {
 
     if (existingLike) {
       await likeModel.findByIdAndDelete(existingLike._id);
+      await blogModel.findByIdAndUpdate(blogId, { $inc: { likes: -1 } });
       res.status(200).json({ message: "Blog unliked successfully" });
       return;
     }
 
     await likeModel.create({ user: userId, blog: blogId });
+    await blogModel.findByIdAndUpdate(blogId, { $inc: { likes: 1 } });
 
     res.status(200).json({ message: "Blog liked successfully" });
   } catch (error) {
