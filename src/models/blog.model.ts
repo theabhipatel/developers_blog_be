@@ -16,6 +16,10 @@ interface IBaseBlog {
   status: EBlogStatus;
   reads: number;
   comments: number;
+  likes: number;
+  isFeatured: boolean;
+  readingTime: number;
+  tags: string[];
   isDeleted: boolean;
 }
 
@@ -58,6 +62,21 @@ const blogSchema = new Schema<IBlogSchema>(
     comments: {
       type: Number,
       default: 0,
+    },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+    readingTime: {
+      type: Number,
+    },
+    tags: {
+      type: [String],
+      default: [],
     },
     isDeleted: {
       type: Boolean,
