@@ -73,6 +73,7 @@ const blogSchema = new Schema<IBlogSchema>(
     },
     readingTime: {
       type: Number,
+      default: 1,
     },
     tags: {
       type: [String],

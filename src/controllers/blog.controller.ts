@@ -14,6 +14,9 @@ export const addBlogHandler: RequestHandler = async (req, res, next) => {
     const { title, slug, thumbnail, content, status } = req.body;
 
     const uniqueSlug = `${slug}-${new Date().getTime().toString(36)}`;
+    const wordsPerMinuteRead = 200;
+    const wordCount = content.trim().split(/\s+/).length;
+    const readingTime = Math.ceil(wordCount / wordsPerMinuteRead);
 
     await blogModel.create({
       user: userId,
@@ -22,6 +25,7 @@ export const addBlogHandler: RequestHandler = async (req, res, next) => {
       thumbnail,
       content,
       status,
+      readingTime,
     });
 
     res.status(201).json({
