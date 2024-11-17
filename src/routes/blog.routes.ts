@@ -9,6 +9,7 @@ import {
   getUsersAllBlogByUserIdHandler,
   likeUnlikeBlogHandler,
   updateBlogHandler,
+  uploadThumbnailToCloudinaryHandler,
 } from "@/controllers/blog.controller";
 import { authorize } from "@/middlewares/authorize";
 import { validate } from "@/middlewares/validate";
@@ -22,6 +23,7 @@ import {
   getUsersAllBlogByUserIdSchema,
   likeUnlikeBlogSchema,
   updateBlogSchema,
+  uploadThumbnailToCloudinarySchema,
 } from "@/validation/blog";
 import { Router } from "express";
 
@@ -66,6 +68,11 @@ blogRouter.get(
   "/comment/:blogId",
   validate(getAllCommentsForABlogSchema),
   getAllCommentsForABlogHandler
+);
+blogRouter.get(
+  "/upload/thumbnail",
+  validate(uploadThumbnailToCloudinarySchema),
+  uploadThumbnailToCloudinaryHandler
 );
 blogRouter.get("/:blogId", validate(getBlogSchema), getBlogByIdHandler);
 

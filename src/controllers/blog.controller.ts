@@ -1,9 +1,11 @@
+import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from "@/config";
 import { IBlog } from "@/interfaces/IBlog";
 import blogModel from "@/models/blog.model";
 import blogReadModel from "@/models/blogRead.model";
 import commentModel from "@/models/comment.model";
 import followerModel from "@/models/follower.model";
 import likeModel from "@/models/like.model";
+import { cloudinary } from "@/utils/cloudinary";
 import { RequestHandler } from "express";
 
 export const addBlogHandler: RequestHandler = async (req, res, next) => {
@@ -399,6 +401,34 @@ export const getAllCommentsForABlogHandler: RequestHandler = async (req, res, ne
     res
       .status(200)
       .json({ message: "Comments fetched successfully", comments: transformedComments });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const uploadThumbnailToCloudinaryHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const fileName = req.query.fileName;
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const publicId = `thumbnails/${userId}-${timestamp.toString(16)}-${fileName}`;
+    const signature = cloudinary.utils.api_sign_request(
+      {
+        public_id: publicId,
+        timestamp,
+      },
+      CLOUDINARY_API_SECRET!
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Upload thumbnail image requested successfully.",
+      signature,
+      timestamp,
+      api_key: CLOUDINARY_API_KEY,
+      public_id: publicId,
+      upload_url: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    });
   } catch (error) {
     next(error);
   }

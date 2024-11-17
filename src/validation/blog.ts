@@ -81,3 +81,9 @@ export const getAllCommentsForABlogSchema = object({
     }),
   }),
 });
+
+export const uploadThumbnailToCloudinarySchema = object({
+  query: object({
+    fileName: string({ required_error: "fileName is required in query." }),
+  }),
+});
