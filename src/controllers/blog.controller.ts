@@ -467,9 +467,38 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
   try {
     const userId = req.user.userId;
     // [::] TODO : Have to proper populate all blogs
-    const blogs = await userProfileModel
-      .findOne({ user: userId }, { readLater: 1 })
-      .populate("readLater", "-content");
+    const userProfile = await userProfileModel
+      .findOne({ user: userId })
+      .populate({
+        path: "readLater",
+        select: "-content",
+        populate: {
+          path: "user",
+          select: "username",
+        },
+      })
+      .lean();
+
+    if (!userProfile) {
+      res.status(404).json({ message: "User profile not found." });
+      return;
+    }
+
+    const { firstName, lastName, profilePic } = userProfile;
+    // [::] TODO : Have to handle typescript error and pagination.
+    const blogs = userProfile?.readLater.map((blog) => {
+      const username = blog.user.username;
+      return {
+        ...blog,
+        user: {
+          firstName,
+          lastName,
+          profilePic,
+          username,
+        },
+      };
+    });
+
     res.status(200).json({ message: "Blog added to read later successfully", blogs });
   } catch (error) {
     next(error);
