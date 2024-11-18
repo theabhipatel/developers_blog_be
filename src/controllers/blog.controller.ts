@@ -451,6 +451,18 @@ export const addBlogToReadLaterHandler: RequestHandler = async (req, res, next) 
   }
 };
 
+export const removeBlogFromReadLaterHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const { blogId } = req.params;
+
+    await userProfileModel.findOneAndUpdate({ user: userId }, { $pull: { readLater: blogId } });
+    res.status(200).json({ success: true, message: "Blog removed from read later successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next) => {
   try {
     const userId = req.user.userId;

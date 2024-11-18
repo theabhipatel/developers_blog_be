@@ -10,6 +10,7 @@ import {
   getBlogBySlugHandler,
   getUsersAllBlogByUserIdHandler,
   likeUnlikeBlogHandler,
+  removeBlogFromReadLaterHandler,
   updateBlogHandler,
   uploadThumbnailToCloudinaryHandler,
 } from "@/controllers/blog.controller";
@@ -25,6 +26,7 @@ import {
   getBlogSchema,
   getUsersAllBlogByUserIdSchema,
   likeUnlikeBlogSchema,
+  removeBlogFromReadLaterSchema,
   updateBlogSchema,
   uploadThumbnailToCloudinarySchema,
 } from "@/validation/blog";
@@ -62,6 +64,12 @@ blogRouter.post(
   validate(addBlogToReadLaterSchema),
   authorize([ERoles.ADMIN, ERoles.USER]),
   addBlogToReadLaterHandler
+);
+blogRouter.delete(
+  "/read-later/remove/:blogId",
+  validate(removeBlogFromReadLaterSchema),
+  authorize([ERoles.ADMIN, ERoles.USER]),
+  removeBlogFromReadLaterHandler
 );
 
 /** ---> Get routes. */

@@ -95,3 +95,11 @@ export const addBlogToReadLaterSchema = object({
     }),
   }),
 });
+
+export const removeBlogFromReadLaterSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
