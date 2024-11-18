@@ -36,6 +36,7 @@ const userProfileSchema = new Schema<IUserProfileSchema>(
     },
     readLater: {
       type: [Schema.Types.ObjectId],
+      ref: "blog",
       default: [],
     },
     isDeleted: {
