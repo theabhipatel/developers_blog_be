@@ -445,7 +445,20 @@ export const addBlogToReadLaterHandler: RequestHandler = async (req, res, next) 
     const { blogId } = req.params;
 
     await userProfileModel.findOneAndUpdate({ user: userId }, { $addToSet: { readLater: blogId } });
-    res.status(200).json({ message: "Blog added to read later successfully" });
+    res.status(201).json({ success: true, message: "Blog added to read later successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    // [::] TODO : Have to proper populate all blogs
+    const blogs = await userProfileModel
+      .findOne({ user: userId }, { readLater: 1 })
+      .populate("readLater", "-content");
+    res.status(200).json({ message: "Blog added to read later successfully", blogs });
   } catch (error) {
     next(error);
   }

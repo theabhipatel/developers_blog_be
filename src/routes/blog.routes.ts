@@ -5,6 +5,7 @@ import {
   getAllBlogsHandler,
   getAllCommentsForABlogHandler,
   getAllMyBlogsHandler,
+  getAllReadLaterBlogsHandler,
   getBlogByIdHandler,
   getBlogBySlugHandler,
   getUsersAllBlogByUserIdHandler,
@@ -82,6 +83,7 @@ blogRouter.get(
   validate(uploadThumbnailToCloudinarySchema),
   uploadThumbnailToCloudinaryHandler
 );
+blogRouter.get("/read-later/", authorize([ERoles.ADMIN, ERoles.USER]), getAllReadLaterBlogsHandler);
 blogRouter.get("/:blogId", validate(getBlogSchema), getBlogByIdHandler);
 
 export default blogRouter;
