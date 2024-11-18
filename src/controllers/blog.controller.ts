@@ -5,6 +5,7 @@ import blogReadModel from "@/models/blogRead.model";
 import commentModel from "@/models/comment.model";
 import followerModel from "@/models/follower.model";
 import likeModel from "@/models/like.model";
+import userProfileModel from "@/models/userProfile.model";
 import { cloudinary } from "@/utils/cloudinary";
 import { RequestHandler } from "express";
 
@@ -433,6 +434,18 @@ export const uploadThumbnailToCloudinaryHandler: RequestHandler = async (req, re
       public_id: publicId,
       upload_url: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const addBlogToReadLaterHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const { blogId } = req.params;
+
+    await userProfileModel.findOneAndUpdate({ user: userId }, { $addToSet: { readLater: blogId } });
+    res.status(200).json({ message: "Blog added to read later successfully" });
   } catch (error) {
     next(error);
   }

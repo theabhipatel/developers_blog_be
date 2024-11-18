@@ -1,5 +1,6 @@
 import {
   addBlogHandler,
+  addBlogToReadLaterHandler,
   addCommentToBlogHandler,
   getAllBlogsHandler,
   getAllCommentsForABlogHandler,
@@ -16,6 +17,7 @@ import { validate } from "@/middlewares/validate";
 import { ERoles } from "@/models/user.model";
 import {
   addBlogSchema,
+  addBlogToReadLaterSchema,
   addCommentToBlogSchema,
   getAllCommentsForABlogSchema,
   getBlogBySlugSchema,
@@ -53,6 +55,12 @@ blogRouter.post(
   validate(addCommentToBlogSchema),
   authorize([ERoles.ADMIN, ERoles.USER]),
   addCommentToBlogHandler
+);
+blogRouter.post(
+  "/read-later/add/:blogId",
+  validate(addBlogToReadLaterSchema),
+  authorize([ERoles.ADMIN, ERoles.USER]),
+  addBlogToReadLaterHandler
 );
 
 /** ---> Get routes. */

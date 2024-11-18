@@ -87,3 +87,11 @@ export const uploadThumbnailToCloudinarySchema = object({
     fileName: string({ required_error: "fileName is required in query." }),
   }),
 });
+
+export const addBlogToReadLaterSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
