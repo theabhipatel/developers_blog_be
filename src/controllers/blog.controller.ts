@@ -342,14 +342,14 @@ export const likeUnlikeBlogHandler: RequestHandler = async (req, res, next) => {
     if (existingLike) {
       await likeModel.findByIdAndDelete(existingLike._id);
       await blogModel.findByIdAndUpdate(blogId, { $inc: { likes: -1 } });
-      res.status(200).json({ message: "Blog unliked successfully" });
+      res.status(200).json({ message: "Blog unliked successfully." });
       return;
     }
 
     await likeModel.create({ user: userId, blog: blogId });
     await blogModel.findByIdAndUpdate(blogId, { $inc: { likes: 1 } });
 
-    res.status(200).json({ message: "Blog liked successfully" });
+    res.status(200).json({ message: "Blog liked successfully." });
   } catch (error) {
     next(error);
   }
@@ -361,7 +361,7 @@ export const addCommentToBlogHandler: RequestHandler = async (req, res, next) =>
     const { blogId, content } = req.body;
 
     await commentModel.create({ user: userId, blog: blogId, content });
-    res.status(200).json({ message: "Comment added successfully" });
+    res.status(200).json({ message: "Comment added successfully." });
 
     await blogModel.findByIdAndUpdate(blogId, { $inc: { comments: 1 } });
   } catch (error) {
@@ -405,7 +405,7 @@ export const getAllCommentsForABlogHandler: RequestHandler = async (req, res, ne
 
     res
       .status(200)
-      .json({ message: "Comments fetched successfully", comments: transformedComments });
+      .json({ message: "Comments fetched successfully.", comments: transformedComments });
   } catch (error) {
     next(error);
   }
@@ -452,7 +452,7 @@ export const addBlogToReadLaterHandler: RequestHandler = async (req, res, next) 
       res.status(404).json({ success: false, message: "User profile not found." });
       return;
     }
-    res.status(201).json({ success: true, message: "Blog added to read later successfully" });
+    res.status(201).json({ success: true, message: "Blog added to read later successfully." });
   } catch (error) {
     next(error);
   }
@@ -522,7 +522,7 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
 
     res.status(200).json({
       success: true,
-      message: "Read later blogs fetch successfully",
+      message: "Read later blogs fetch successfully.",
       blogs: refactoredBlogs,
       meta: {
         page,
@@ -552,7 +552,7 @@ export const getAllLikedBlogsHandler: RequestHandler = async (req, res, next) =>
       .lean();
 
     if (blogs.length === 0) {
-      res.status(200).json({ success: true, message: "Liked blogs fetched successfully", blogs });
+      res.status(200).json({ success: true, message: "Liked blogs fetched successfully.", blogs });
       return;
     }
 
@@ -578,7 +578,7 @@ export const getAllLikedBlogsHandler: RequestHandler = async (req, res, next) =>
 
     res.status(200).json({
       success: true,
-      message: "Liked blogs fetched successfully",
+      message: "Liked blogs fetched successfully.",
       blogs: refactoredBlogs,
       meta: {
         page,
