@@ -466,7 +466,7 @@ export const removeBlogFromReadLaterHandler: RequestHandler = async (req, res, n
 export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-    // [::] TODO : Have to proper populate all blogs
+
     const userProfile = await userProfileModel
       .findOne({ user: userId })
       .populate({
@@ -485,9 +485,9 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
     }
 
     const { firstName, lastName, profilePic } = userProfile;
-    // [::] TODO : Have to handle typescript error and pagination.
     const blogs = userProfile?.readLater.map((blog) => {
-      const username = blog.user.username;
+      /** ---> Need to disable eslint here manually. */
+      const username = (blog as any).user.username; // eslint-disable-line
       return {
         ...blog,
         user: {
