@@ -444,7 +444,14 @@ export const addBlogToReadLaterHandler: RequestHandler = async (req, res, next) 
     const userId = req.user.userId;
     const { blogId } = req.params;
 
-    await userProfileModel.findOneAndUpdate({ user: userId }, { $addToSet: { readLater: blogId } });
+    const profile = await userProfileModel.findOneAndUpdate(
+      { user: userId },
+      { $addToSet: { readLater: blogId } }
+    );
+    if (!profile) {
+      res.status(404).json({ success: false, message: "User profile not found." });
+      return;
+    }
     res.status(201).json({ success: true, message: "Blog added to read later successfully" });
   } catch (error) {
     next(error);
@@ -456,8 +463,15 @@ export const removeBlogFromReadLaterHandler: RequestHandler = async (req, res, n
     const userId = req.user.userId;
     const { blogId } = req.params;
 
-    await userProfileModel.findOneAndUpdate({ user: userId }, { $pull: { readLater: blogId } });
-    res.status(200).json({ success: true, message: "Blog removed from read later successfully" });
+    const profile = await userProfileModel.findOneAndUpdate(
+      { user: userId },
+      { $pull: { readLater: blogId } }
+    );
+    if (!profile) {
+      res.status(404).json({ success: false, message: "User profile not found." });
+      return;
+    }
+    res.status(200).json({ success: true, message: "Blog removed from read later successfully." });
   } catch (error) {
     next(error);
   }
