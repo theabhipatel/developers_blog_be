@@ -473,27 +473,28 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
 
     const userProfile = await userProfileModel
       .findOne({ user: userId })
-      .populate({
-        path: "readLater",
-        select: "-content",
-        populate: {
-          path: "user",
-          select: "username",
-        },
-      })
-      .skip(skip)
-      .limit(limit)
+      .select("readLater firstName lastName profilePic user")
+      .populate("user", "username")
       .lean();
 
-    if (!userProfile) {
-      res.status(404).json({ message: "User profile not found." });
+    if (!userProfile || !userProfile.readLater.length) {
+      res.status(404).json({ success: false, message: "No blogs found in read later." });
       return;
     }
 
-    const { firstName, lastName, profilePic } = userProfile;
-    const blogs = userProfile?.readLater.map((blog) => {
+    const { firstName, lastName, profilePic, user } = userProfile;
+
+    const readLaterIds = userProfile.readLater.slice(skip, skip + limit);
+
+    const blogs = await blogModel
+      .find({ _id: { $in: readLaterIds } })
+      .select("-content")
+      .populate("user", "username")
+      .lean();
+
+    const refactoredBlogs = blogs.map((blog) => {
       /** ---> Need to disable eslint here manually. */
-      const username = (blog as any).user.username; // eslint-disable-line
+      const username = (user as any).username; // eslint-disable-line
       return {
         ...blog,
         user: {
@@ -505,7 +506,17 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
       };
     });
 
-    res.status(200).json({ message: "Blog added to read later successfully", blogs });
+    res.status(200).json({
+      success: false,
+      message: "Read later blogs fetch successfully",
+      blogs: refactoredBlogs,
+      meta: {
+        page,
+        limit,
+        total: userProfile.readLater.length,
+        totalPages: Math.ceil(userProfile.readLater.length / limit),
+      },
+    });
   } catch (error) {
     next(error);
   }
