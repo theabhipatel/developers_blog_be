@@ -504,3 +504,41 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
     next(error);
   }
 };
+
+export const getAllLikedBlogsHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+
+    const blogs = await likeModel
+      .find({ user: userId })
+      .populate({ path: "blog", select: "-content" })
+      .lean();
+
+    if (blogs.length === 0) {
+      res.status(200).json({ message: "Blogs fetched successfully", blogs });
+      return;
+    }
+
+    const user = await userProfileModel
+      .findOne({ user: userId }, { firstName: 1, lastName: 1, profilePic: 1 })
+      .populate("user", "username")
+      .lean();
+
+    /** ---> Need to disable eslint here manually. */
+    const username = (user as any).user.username; // eslint-disable-line
+    if (user?.user) {
+      delete (user as any).user; // eslint-disable-line
+    }
+
+    const refactoredBlogs = blogs.map((blog) => {
+      return {
+        ...blog.blog,
+        user: { ...user, username },
+      };
+    });
+
+    res.status(200).json({ message: "Blogs fetched successfully", blogs: refactoredBlogs });
+  } catch (error) {
+    next(error);
+  }
+};
