@@ -467,6 +467,10 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
   try {
     const userId = req.user.userId;
 
+    const limit = Number(req.query.limit) || 12;
+    const page = Number(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
     const userProfile = await userProfileModel
       .findOne({ user: userId })
       .populate({
@@ -477,6 +481,8 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
           select: "username",
         },
       })
+      .skip(skip)
+      .limit(limit)
       .lean();
 
     if (!userProfile) {
@@ -509,15 +515,23 @@ export const getAllLikedBlogsHandler: RequestHandler = async (req, res, next) =>
   try {
     const userId = req.user.userId;
 
+    const limit = Number(req.query.limit) || 12;
+    const page = Number(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
     const blogs = await likeModel
       .find({ user: userId })
       .populate({ path: "blog", select: "-content" })
+      .skip(skip)
+      .limit(limit)
       .lean();
 
     if (blogs.length === 0) {
       res.status(200).json({ message: "Blogs fetched successfully", blogs });
       return;
     }
+
+    const totalCount = await likeModel.find({ user: userId }).countDocuments();
 
     const user = await userProfileModel
       .findOne({ user: userId }, { firstName: 1, lastName: 1, profilePic: 1 })
@@ -537,7 +551,16 @@ export const getAllLikedBlogsHandler: RequestHandler = async (req, res, next) =>
       };
     });
 
-    res.status(200).json({ message: "Blogs fetched successfully", blogs: refactoredBlogs });
+    res.status(200).json({
+      message: "Blogs fetched successfully",
+      blogs: refactoredBlogs,
+      meta: {
+        page,
+        limit,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+    });
   } catch (error) {
     next(error);
   }
