@@ -19,6 +19,7 @@ const userProfileSchema = new Schema<IUserProfileSchema>(
       required: true,
       unique: true,
       index: true,
+      ref: "user",
     },
     firstName: {
       type: String,
