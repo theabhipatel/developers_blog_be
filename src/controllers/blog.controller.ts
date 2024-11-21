@@ -491,14 +491,29 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
       .populate("user", "username")
       .lean();
 
-    if (!userProfile || !userProfile.readLater.length) {
-      res.status(404).json({ success: false, message: "No blogs found in read later." });
+    if (!userProfile) {
+      res.status(404).json({ success: false, message: "Profile not found." });
+      return;
+    }
+
+    if (!userProfile?.readLater?.length) {
+      res.status(200).json({
+        success: true,
+        message: "Read later blogs fetch successfully.",
+        blogs: [],
+        meta: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0,
+        },
+      });
       return;
     }
 
     const { firstName, lastName, profilePic, user } = userProfile;
 
-    const readLaterIds = userProfile.readLater.slice(skip, skip + limit);
+    const readLaterIds = userProfile.readLater?.slice(skip, skip + limit);
 
     const blogs = await blogModel
       .find({ _id: { $in: readLaterIds } })
