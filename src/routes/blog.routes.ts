@@ -92,7 +92,7 @@ blogRouter.get(
   validate(uploadThumbnailToCloudinarySchema),
   uploadThumbnailToCloudinaryHandler
 );
-blogRouter.get("/read-later/", authorize([ERoles.ADMIN, ERoles.USER]), getAllReadLaterBlogsHandler);
+blogRouter.get("/read-later", authorize([ERoles.ADMIN, ERoles.USER]), getAllReadLaterBlogsHandler);
 blogRouter.get("/like", authorize([ERoles.ADMIN, ERoles.USER]), getAllLikedBlogsHandler);
 blogRouter.get("/:blogId", validate(getBlogSchema), getBlogByIdHandler);
 
