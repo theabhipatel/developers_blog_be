@@ -526,6 +526,7 @@ export const getAllReadLaterBlogsHandler: RequestHandler = async (req, res, next
       const username = (user as any).username; // eslint-disable-line
       return {
         ...blog,
+        isReadLater: true,
         user: {
           firstName,
           lastName,
