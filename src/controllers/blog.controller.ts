@@ -164,7 +164,7 @@ export const getBlogBySlugHandler: RequestHandler = async (req, res, next) => {
   try {
     const slug = req.params.slug;
     const viewerId = req.user?.userId;
-    const userIp = req.ip;
+    const userIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress; // Testing getting IP for reads counts
 
     const blog = await blogModel
       .findOne({ slug })
