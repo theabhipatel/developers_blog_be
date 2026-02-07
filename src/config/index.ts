@@ -17,3 +17,8 @@ export const SMTP_HOST = process.env.SMTP_HOST;
 export const SMTP_PORT = process.env.SMTP_PORT;
 export const SMTP_USERNAME = process.env.SMTP_USERNAME;
 export const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
+
+/** ---> Cloudinary credentials. */
+export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;

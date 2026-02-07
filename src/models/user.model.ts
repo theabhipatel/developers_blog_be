@@ -14,6 +14,7 @@ export enum EProvider {
 
 interface IBaseUser {
   email: string;
+  username: string;
   password: string;
   role: ERoles;
   provider: EProvider;
@@ -27,6 +28,12 @@ interface IUserSchema extends Document, IBaseUser {}
 const userSchema = new Schema<IUserSchema>(
   {
     email: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -60,6 +67,16 @@ const userSchema = new Schema<IUserSchema>(
   },
   { timestamps: true }
 );
+
+/** ---> Add virtual schema to populate userProfile direclty */
+userSchema.virtual("userProfile", {
+  ref: "userProfile",
+  localField: "_id",
+  foreignField: "user",
+  justOne: true,
+});
+userSchema.set("toObject", { virtuals: true });
+userSchema.set("toJSON", { virtuals: true });
 
 const userModel = model<IUserSchema>("user", userSchema);
 export default userModel;

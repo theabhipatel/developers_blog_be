@@ -1,0 +1,105 @@
+import { EBlogStatus } from "@/models/blog.model";
+import { isValidObjectId } from "mongoose";
+import { object, string, enum as enum_ } from "zod";
+
+const blogStatusEnum = Object.values(EBlogStatus) as [EBlogStatus, ...EBlogStatus[]];
+
+export const addBlogSchema = object({
+  body: object({
+    title: string({ required_error: "title is required." }),
+    slug: string({ required_error: "slug is required." }),
+    thumbnail: string({ required_error: "thumbnail is required." }).url(),
+    content: string({ required_error: "content is required." }),
+    status: enum_(blogStatusEnum, { required_error: "status is required." }),
+  }),
+});
+
+export const updateBlogSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+  body: object({
+    title: string({ message: "title must be string" }).optional(),
+    thumbnail: string({ message: "thumbnail must be url string" })
+      .url({ message: "thumbnail must be a url" })
+      .optional(),
+    content: string({ message: "content must be string" }).optional(),
+    status: enum_(blogStatusEnum, {
+      message: "status must be either draft or published",
+    }).optional(),
+  }),
+});
+
+export const getBlogSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
+
+export const getBlogBySlugSchema = object({
+  params: object({
+    slug: string({ required_error: "slug is required." }),
+  }),
+});
+
+export const getUsersAllBlogByUserIdSchema = object({
+  params: object({
+    userId: string({ required_error: "userId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid userId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
+
+export const likeUnlikeBlogSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
+
+export const addCommentToBlogSchema = object({
+  body: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+    content: string({ required_error: "content is required." }).min(
+      3,
+      "content must be at least 3 characters long."
+    ),
+  }),
+});
+
+export const getAllCommentsForABlogSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
+
+export const uploadThumbnailToCloudinarySchema = object({
+  query: object({
+    fileName: string({ required_error: "fileName is required in query." }),
+  }),
+});
+
+export const addBlogToReadLaterSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});
+
+export const removeBlogFromReadLaterSchema = object({
+  params: object({
+    blogId: string({ required_error: "blogId is required." }).refine((id) => isValidObjectId(id), {
+      message: "Invalid blogId. Must be a valid MongoDB ObjectId.",
+    }),
+  }),
+});

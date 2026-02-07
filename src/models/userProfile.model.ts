@@ -6,6 +6,7 @@ interface IBaseUserProfile {
   lastName: string;
   profilePic: string;
   bio: string;
+  readLater: Schema.Types.ObjectId[];
   isDeleted: boolean;
 }
 
@@ -18,6 +19,7 @@ const userProfileSchema = new Schema<IUserProfileSchema>(
       required: true,
       unique: true,
       index: true,
+      ref: "user",
     },
     firstName: {
       type: String,
@@ -32,6 +34,11 @@ const userProfileSchema = new Schema<IUserProfileSchema>(
     },
     bio: {
       type: String,
+    },
+    readLater: {
+      type: [Schema.Types.ObjectId],
+      ref: "blog",
+      default: [],
     },
     isDeleted: {
       type: Boolean,
