@@ -39,3 +39,5 @@ app.listen(Number(PORT), HOST_NAME, () => {
   blueLog(`[::] Server is running at http://${HOST_NAME}:${PORT}`);
   connectDb(MONGO_DB_URL);
 });
+
+export default app;
