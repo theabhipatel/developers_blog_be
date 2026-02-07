@@ -1,7 +1,4 @@
 import express from "express";
-import { HOST_NAME, MONGO_DB_URL, PORT } from "./config";
-import { blueLog } from "./utils/colorLogs";
-import { connectDb } from "./utils/connectDb";
 import { errorHandler } from "./middlewares/errorHandler";
 import cors from "cors";
 import helmet from "helmet";
@@ -34,10 +31,5 @@ app.use("*", (req, res) => {
 
 /** ---> Handling global errors */
 app.use(errorHandler);
-
-app.listen(Number(PORT), HOST_NAME, () => {
-  blueLog(`[::] Server is running at http://${HOST_NAME}:${PORT}`);
-  connectDb(MONGO_DB_URL);
-});
 
 export default app;
