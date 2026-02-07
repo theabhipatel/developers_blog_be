@@ -1,8 +1,8 @@
+/* eslint-disable */
+
 /**
  * Vercel deploy entry handler, for serverless deployment, please don't modify this file
  */
-import app from "../dist/app.js";
+const app = require("../dist/app.js").default;
 
-module.exports = (req, res) => {
-  return app(req, res);
-};
+module.exports = (req, res) => app(req, res);
