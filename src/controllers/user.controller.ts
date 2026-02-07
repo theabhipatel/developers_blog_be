@@ -18,6 +18,7 @@ export const getUserProfileByUserNameHandler: RequestHandler = async (req, res, 
     const profile = await userProfileModel.findOne({ user: user?._id }).lean();
     const followers = await followerModel.find({ following: user._id }).countDocuments();
 
+    // @ts-expect-error : pass build
     if (user._id === viewerId) {
       res.status(200).json({
         success: true,

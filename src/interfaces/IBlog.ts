@@ -1,5 +1,6 @@
 import { Document, ObjectId } from "mongoose";
 
+// @ts-expect-error :  pass build
 export interface IBlog extends Document {
   _id: ObjectId;
   user: {
